@@ -801,3 +801,32 @@
 	target.layer = old_layer
 	target.plane = old_plane
 	current_button.appearance_cache = target.appearance
+
+/datum/action/cooldown/pointed
+	var/mob/living/current_pointed_user
+
+/datum/action/cooldown/pointed/Trigger()
+	. = ..()
+	if(!.)
+		return
+	owner.click_intercept = src
+
+/datum/action/cooldown/pointed/Remove(mob/M)
+	if(owner.click_intercept == src)
+		owner.click_intercept = null
+	return ..()
+
+/datum/action/cooldown/pointed/proc/action_effects(mob/user,params,atom/target)
+	return
+
+/datum/action/cooldown/pointed/proc/InterceptClickOn(mob/user,params,atom/target)
+	action_effects(user,params,target)
+	owner.click_intercept = null
+
+/datum/action/cooldown/pointed/hack
+	background_icon_state = "bg_cybernetic"
+	icon_icon = 'icons/mob/actions/actions_cybernetics.dmi'
+	var/datum/cybernetic_hack/our_hack
+
+/datum/action/cooldown/pointed/hack/action_effects(mob/user,params,atom/target)
+	our_hack.try_effect(target,user)
